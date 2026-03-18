@@ -13,11 +13,33 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Update KittyMemory to latest
+      - name: Fix writeData.hpp
         run: |
-          cd deps/KittyMemory
-          git fetch origin
-          git checkout origin/master
+          cat > deps/KittyMemory/KittyMemory/writeData.hpp << 'EOF'
+          #pragma once
+          #ifdef __APPLE__
+          #include <cmath>
+          #include <cstdint>
+          #include "MemoryPatch.hpp"
+          #include <libkern/_OSByteOrder.h>
+
+          static inline bool writeData8(uintptr_t address, uint8_t data) {
+              return MemoryPatch::createWithBytes(address, &data, 1).Modify();
+          }
+          static inline bool writeData16(uintptr_t address, uint16_t data) {
+              uint16_t tmp = _OSSwapInt16(data);
+              return MemoryPatch::createWithBytes(address, &tmp, 2).Modify();
+          }
+          static inline bool writeData32(uintptr_t address, uint32_t data) {
+              uint32_t tmp = _OSSwapInt32(data);
+              return MemoryPatch::createWithBytes(address, &tmp, 4).Modify();
+          }
+          static inline bool writeData64(uintptr_t address, uint64_t data) {
+              uint64_t tmp = _OSSwapInt64(data);
+              return MemoryPatch::createWithBytes(address, &tmp, 8).Modify();
+          }
+          #endif
+          EOF
 
       - name: Install Theos
         run: |
