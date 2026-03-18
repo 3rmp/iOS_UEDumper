@@ -13,6 +13,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Pin KittyMemory to compatible commit
+        run: |
+          cd deps/KittyMemory
+          git checkout 99a3a3d
+
       - name: Install Theos
         run: |
           git clone --recursive https://github.com/theos/theos.git $HOME/theos
