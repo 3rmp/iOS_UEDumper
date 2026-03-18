@@ -60,8 +60,11 @@ jobs:
           cd Tweak
           make clean package FINALPACKAGE=1
 
+      - name: Find deb
+        run: find . -name "*.deb"
+
       - name: Upload .deb artifact
         uses: actions/upload-artifact@v4
         with:
           name: iOS_UEDumper-deb
-          path: Tweak/packages/*.deb
+          path: "**/*.deb"
