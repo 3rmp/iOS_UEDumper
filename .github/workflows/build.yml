@@ -58,7 +58,7 @@ jobs:
       - name: Build package
         run: |
           cd Tweak
-          make clean package FINALPACKAGE=1
+          make clean package FINALPACKAGE=1 ARCHS="arm64 arm64e"
 
       - name: Find deb
         run: find . -name "*.deb"
