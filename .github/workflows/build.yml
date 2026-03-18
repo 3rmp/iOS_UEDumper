@@ -15,19 +15,22 @@ jobs:
 
       - name: Install Theos
         run: |
-          bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
+          git clone --recursive https://github.com/theos/theos.git $HOME/theos
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
 
       - name: Install iOS SDK
         run: |
-          curl -LO https://github.com/theos/sdks/releases/download/master/iPhoneOS16.5.sdk.tar.xz
-          tar -xf iPhoneOS16.5.sdk.tar.xz -C $THEOS/sdks/
+          curl -L https://github.com/theos/sdks/releases/download/master-146e41f/iPhoneOS16.5.sdk.tar.xz -o /tmp/sdk.tar.xz
+          tar -xf /tmp/sdk.tar.xz -C $HOME/theos/sdks/
+
+      - name: Install build dependencies
+        run: |
+          brew install ldid xz
 
       - name: Build package
         run: |
           cd Tweak
           make clean package FINALPACKAGE=1
-        env:
-          THEOS: ${{ github.workspace }}/../theos
 
       - name: Upload .deb artifact
         uses: actions/upload-artifact@v4
