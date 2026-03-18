@@ -13,10 +13,11 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Pin KittyMemory to compatible commit
+      - name: Update KittyMemory to latest
         run: |
           cd deps/KittyMemory
-          git checkout 99a3a3d
+          git fetch origin
+          git checkout origin/master
 
       - name: Install Theos
         run: |
